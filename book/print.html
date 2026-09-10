@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-eb994933.js";
+            window.path_to_searchindex_js = "searchindex-5fe6d668.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-8a0b9f6e.js"></script>
+        <script src="toc-130524df.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -176,11 +176,82 @@
                 <div id="mdbook-content" class="content">
                     <main>
                         <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
-<p>This is a book to document my embedded systems learning process.</p>
+<p>This is a book to document my embedded systems learning process.<br>Source code is located at <a href="https://github.com/PedroFerrariBarbosa202/embedded-systems-notes">PedroFerrariBarbosa202/embedded-systems-notes</a>.</p>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="introduction-1"><a class="header" href="#introduction-1">Introduction</a></h1>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="assembly"><a class="header" href="#assembly">Assembly</a></h1>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="functional-debugging"><a class="header" href="#functional-debugging">Functional Debugging</a></h1>
+<h2 id="dump-into-array-without-filtering"><a class="header" href="#dump-into-array-without-filtering">Dump into Array without filtering</a></h2>
+<ul>
+<li>embedded system may not always have the capability of using print statements for some reasons:
+<ul>
+<li>
+<ol>
+<li>bandwidth of the print function may not be large enough</li>
+</ol>
+</li>
+<li>
+<ol start="2">
+<li>system may not have a display available for the output</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>solution: add a function/debugger instrument to throw into an array debugging info, retrieving it after the runtime</li>
+</ul>
+<pre><code class="language-asm">SIZE equ 20
+ABuf space SIZE
+BBuf space SIZE
+Cnt  space 4
+
+Save    push {R0-R4, LR}
+        ldr R0, =Cnt                        ;R0 = &amp;Cnt
+        cmp R1, #SIZE                       ;R1 = Cnt
+        bhs done
+        ldr R3, =GPIO_PORTA_DATA_R
+        ldr R3, [R3]                        ;R3 is Port A
+        ldr r2, =ABuf
+        strb R3, [R2, R1]                   ;Save Port A
+        ldr R3, =GPIO_PORTB_DATA_R
+        ldrb R3, [R3]                       ;R3 is Port B
+        ldr R3, =BBuf
+        strb R3, [R2, R1]                   ;Save Port B
+        add R1, #1
+        str R1, [R0]                        ;Save Cnt
+done    pop {R0-R4, PC}
+</code></pre>
+<h2 id="dump-into-array-with-filtering"><a class="header" href="#dump-into-array-with-filtering">Dump into Array with Filtering</a></h2>
+<ul>
+<li>problem with dumping: it generates a lot of information</li>
+<li>filter is a condition to add items to the debugging array</li>
+</ul>
+<pre><code class="language-asm">SIZE equ 20
+ABuf space SIZE
+BBuf space SIZE
+Cnt  space 4
+
+Save    push {R0-R4, LR}
+        ldr R3, =GPIO_PORTB_DATA_R
+        ldr R3, [R3]                        ;R3 is Port B
+        cmp R3, #100                        ;checks if Port B less than 100
+        bls done                            ;assuming unsigned
+        ldr R0, =Cnt                        ;R0 = &amp;Cnt
+        cmp R1, #SIZE                       ;R1 = Cnt
+        bhs done
+        ldr R3, =GPIO_PORTA_DATA_R
+        ldr R3, [R3]                        ;R3 is Port A
+        ldr r2, =ABuf
+        strb R3, [R2, R1]                   ;Save Port A
+        ldr R3, =GPIO_PORTB_DATA_R
+        ldrb R3, [R3]                       ;R3 is Port B
+        ldr R3, =BBuf
+        strb R3, [R2, R1]                   ;Save Port B
+        add R1, #1
+        str R1, [R0]                        ;Save Cnt
+done    pop {R0-R4, PC}
+</code></pre>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="introduction-2"><a class="header" href="#introduction-2">Introduction</a></h1>
 <div style="break-before: page; page-break-before: always;"></div>
