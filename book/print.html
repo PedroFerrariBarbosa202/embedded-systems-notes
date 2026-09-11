@@ -36,7 +36,7 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-6cd453ea.js";
+            window.path_to_searchindex_js = "searchindex-55c42cb2.js";
         </script>
         <!-- Start loading toc.js asap -->
         <script src="toc-ef5a7a78.js"></script>
@@ -181,6 +181,87 @@
 <h1 id="introduction-1"><a class="header" href="#introduction-1">Introduction</a></h1>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="assembly"><a class="header" href="#assembly">Assembly</a></h1>
+<h2 id="stack"><a class="header" href="#stack">Stack</a></h2>
+<ul>
+<li>its a region of memory treated as a data structure</li>
+<li>grows upwards (from higher to lower addresses)</li>
+<li>SP register points to top of register</li>
+<li>allocation:
+<pre><code class="language-asm">sub SP, SP, #40    ;allocates 10 bytes
+add Sp, SP, #40    ;deallocates 10 bytes
+</code></pre>
+</li>
+<li>PUSH and POP: instructions to directly manipulate the stack
+<pre><code class="language-asm">push {R4-R11, LR}   ;push register and return address into the stack
+; ...
+pop {R4-R11, PC}    ;pop from stack and put data on registers and PC
+</code></pre>
+</li>
+</ul>
+<h3 id="stack-frame"><a class="header" href="#stack-frame">Stack frame</a></h3>
+<ul>
+<li>to better access data from the stack in a function, a register (suck as R11) serves as a stack frame</li>
+<li>stack frame will point to the base of the stack of that specific function</li>
+<li>order of data allocated on stack after a function call:
+<ul>
+<li>
+<ol>
+<li>Parameters</li>
+</ol>
+</li>
+<li>
+<ol start="2">
+<li>Return address</li>
+</ol>
+</li>
+<li>
+<ol start="3">
+<li>Saved registers</li>
+</ol>
+</li>
+<li>
+<ol start="4">
+<li>Local Variables</li>
+</ol>
+</li>
+</ul>
+</li>
+<li>one advantage of a stack frame is that you can push and pop while still accessing local variables correctly by their symbolic name</li>
+</ul>
+<h3 id="stack-rules"><a class="header" href="#stack-rules">Stack rules</a></h3>
+<ul>
+<li>
+<ol>
+<li>program segments must have equal number of push and pull operations</li>
+</ol>
+</li>
+<li>
+<ol start="2">
+<li>stack acesses should not be performed in unallocated areas</li>
+</ol>
+</li>
+<li>
+<ol start="3">
+<li>stack push must first decrement by (4 * BYTES_TO_ALLOCATE)</li>
+</ol>
+</li>
+<li>
+<ol start="4">
+<li>stack pop must increment by (4 * BYTES_TO_DEALLOCATE) after reading data</li>
+</ol>
+</li>
+</ul>
+<h2 id="parameter-passing"><a class="header" href="#parameter-passing">Parameter passing</a></h2>
+<ul>
+<li>methods to pass parameters
+<ul>
+<li>call by value: makes a local copy of the data</li>
+<li>call by reference: passes a pointer to the data</li>
+</ul>
+</li>
+<li>by AAPCS convention, the first four parameters are passed in the R0-R3 registers<br>(if more than 4 parameters: use the stack)</li>
+<li>in assembly: multiple return values can be passed through registers</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="functional-debugging"><a class="header" href="#functional-debugging">Functional Debugging</a></h1>
 <h2 id="dump-into-array-without-filtering"><a class="header" href="#dump-into-array-without-filtering">Dump into Array without filtering</a></h2>
