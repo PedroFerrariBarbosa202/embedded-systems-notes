@@ -21,6 +21,39 @@
     - enable interrupts (in the peripheral and in the NVIC)
     - enable peripheral
 
+## SPI
+- requires 4 lines (+1 for each addicional slave)  
+(these can have different names)
+    - Cs: Chip select
+    - Sclk: Clock line
+    - Mosi: Master out, slave in
+    - Miso: Master in, slave out
+- fast protocol
+- SPI modes:
+    - clock polarity:
+        - Active high: clock is idle low and pulled high
+        - Active low: clock is idle high and pulled low
+    - clock phase
+        - clock phase 0: data is sampled in the leading edge
+        - clock phase 1: data is sampled in the trailing edge
+- multi slave communication:
+    - independend slaves: one Cs line is connected to each slave (uses more resources)
+    - cooperative slaves/ Daisy chain: slaves pass the data from one to another, until it reaches the correct slave  
+    (ones MOSI line is connected to the others MISO)
+
+```
+ ________     CS     ________
+|        |----------|        |      /* Pulled down/high to initiate communication */            
+|        |   SCLK   |        |
+|        |----------|        |      /* Clock (Master ALWAYS generates clock) */  
+| Master |   MOSI   | Slave  |
+|        |----------|        |      /* Master line to send data to slave */
+|        |   MISO   |        | 
+|________|----------|________|      /* Slave line to send data to master */
+```
+
+
+
 ## I2C
 - requires 2 lines
     - SDA: Data line

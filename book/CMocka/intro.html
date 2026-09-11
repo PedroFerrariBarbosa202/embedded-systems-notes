@@ -35,10 +35,10 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-c2f518eb.js";
+            window.path_to_searchindex_js = "../searchindex-6cd453ea.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc-bccc44d4.js"></script>
+        <script src="../toc-ef5a7a78.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -175,6 +175,106 @@
                 <div id="mdbook-content" class="content">
                     <main>
                         <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
+<ul>
+<li>CMocka is a framework for testing C software</li>
+</ul>
+<h2 id="standard-includes"><a class="header" href="#standard-includes">Standard includes</a></h2>
+<ul>
+<li>CMocka needs some includes to work</li>
+</ul>
+<pre><code class="language-C">#include &lt;stdarg.h&gt;
+#include &lt;stdbool.h&gt;
+#include &lt;stddef.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;setjmp.h&gt;
+
+#include &lt;cmocka.h&gt;
+</code></pre>
+<h2 id="asserts"><a class="header" href="#asserts">Asserts</a></h2>
+<ul>
+<li>heres the full list of assert macros: <a href="https://api.cmocka.org/group__cmocka__asserts.html">Assert Macros</a></li>
+</ul>
+<h2 id="test-structure"><a class="header" href="#test-structure">Test Structure</a></h2>
+<ul>
+<li>
+<p>declare a const struct CMUnitTest to encapsulate all the tests</p>
+</li>
+<li>
+<p>call cmocka_run_group_tests([TEST STRUCT], NULL, NULL) to run tests</p>
+</li>
+<li>
+<p>unit test can have some variations</p>
+<ul>
+<li>with prestate</li>
+<li>with setup/teardown</li>
+</ul>
+</li>
+<li>
+<p>global setup/teardown functions can be set in the 2nd and 3rd parameters of the cmocka_run_group_tests() function</p>
+</li>
+</ul>
+<pre><code class="language-C">void Test(void **state);
+
+const struct CMUnitTest tests[] = {
+    cmocka_unit_test(Test),
+    cmocka_unit_test_setup(Test, setup)
+    cmocka_unit_test_teardown(Test, teardown)
+    cmocka_unit_test_setup_teardown(Test, setup, teardown)
+    cmocka_unit_test_prestate(Test, state)
+    cmocka_unit_test_prestate_setup_teardown(Test, setup, teardown, state)
+};
+
+
+int main(void)
+{
+    return cmocka_run_group_tests(tests, NULL, NULL);
+}
+</code></pre>
+<h3 id="prestates"><a class="header" href="#prestates">Prestates</a></h3>
+<ul>
+<li>states can be passed to tests</li>
+<li>useful to iterate over many states of a single test</li>
+</ul>
+<pre><code class="language-C">    typedef struct{
+        uint32_t input_a;
+        uint32_t input_b;
+        uint32_t expected;
+    }test_state_t;
+
+    static uint32_t calculate_mdc(uint32_t a, uint32_t b){
+        while(b != 0){
+            uint32_t temp = a;
+            a = b;
+            b = temp % b;
+        }
+
+        return a;
+    }
+
+    static void test_mdc(){
+        test_state_t *s = *state;
+
+        assert_uint equal(calculate_mdc(s-&gt;input_a, s-&gt;input_b), s-&gt;expected);
+    }
+
+    int main(void){
+        test_state_t states[] = {
+            {2,  3,  6},
+            {4,  6,  12},
+            {6,  8,  24},
+            {12, 18, 36},
+        };
+
+        const struct CMUnitTest tests[] = {
+            cmocka_unit_test_prestate(test_mdc, &amp;states[0]),
+            cmocka_unit_test_prestate(test_mdc, &amp;states[1]),
+            cmocka_unit_test_prestate(test_mdc, &amp;states[2]),
+            cmocka_unit_test_prestate(test_mdc, &amp;states[3]),
+        };
+
+        return cmocka_run_group_tests(tests, NULL, NULL);
+    }
+</code></pre>
 
                     </main>
 
@@ -184,6 +284,9 @@
                                 <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                             </a>
 
+                            <a rel="next prefetch" href="../CMocka/mocking.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -195,6 +298,9 @@
                         <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
                     </a>
 
+                    <a rel="next prefetch" href="../CMocka/mocking.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
             </nav>
 
         </div>

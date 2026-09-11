@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-c2f518eb.js";
+            window.path_to_searchindex_js = "searchindex-6cd453ea.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-bccc44d4.js"></script>
+        <script src="toc-ef5a7a78.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -293,6 +293,49 @@ done    pop {R0-R4, PC}
 </ul>
 </li>
 </ul>
+<h2 id="spi"><a class="header" href="#spi">SPI</a></h2>
+<ul>
+<li>requires 4 lines (+1 for each addicional slave)<br>(these can have different names)
+<ul>
+<li>Cs: Chip select</li>
+<li>Sclk: Clock line</li>
+<li>Mosi: Master out, slave in</li>
+<li>Miso: Master in, slave out</li>
+</ul>
+</li>
+<li>fast protocol</li>
+<li>SPI modes:
+<ul>
+<li>clock polarity:
+<ul>
+<li>Active high: clock is idle low and pulled high</li>
+<li>Active low: clock is idle high and pulled low</li>
+</ul>
+</li>
+<li>clock phase
+<ul>
+<li>clock phase 0: data is sampled in the leading edge</li>
+<li>clock phase 1: data is sampled in the trailing edge</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>multi slave communication:
+<ul>
+<li>independend slaves: one Cs line is connected to each slave (uses more resources)</li>
+<li>cooperative slaves/ Daisy chain: slaves pass the data from one to another, until it reaches the correct slave<br>(ones MOSI line is connected to the others MISO)</li>
+</ul>
+</li>
+</ul>
+<pre><code> ________     CS     ________
+|        |----------|        |      /* Pulled down/high to initiate communication */            
+|        |   SCLK   |        |
+|        |----------|        |      /* Clock (Master ALWAYS generates clock) */  
+| Master |   MOSI   | Slave  |
+|        |----------|        |      /* Master line to send data to slave */
+|        |   MISO   |        | 
+|________|----------|________|      /* Slave line to send data to master */
+</code></pre>
 <h2 id="i2c"><a class="header" href="#i2c">I2C</a></h2>
 <ul>
 <li>
@@ -346,6 +389,133 @@ bits:     1            7             1            1       8        1        1
 </ul>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="introduction-3"><a class="header" href="#introduction-3">Introduction</a></h1>
+<ul>
+<li>CMocka is a framework for testing C software</li>
+</ul>
+<h2 id="standard-includes"><a class="header" href="#standard-includes">Standard includes</a></h2>
+<ul>
+<li>CMocka needs some includes to work</li>
+</ul>
+<pre><code class="language-C">#include &lt;stdarg.h&gt;
+#include &lt;stdbool.h&gt;
+#include &lt;stddef.h&gt;
+#include &lt;stdint.h&gt;
+#include &lt;setjmp.h&gt;
+
+#include &lt;cmocka.h&gt;
+</code></pre>
+<h2 id="asserts"><a class="header" href="#asserts">Asserts</a></h2>
+<ul>
+<li>heres the full list of assert macros: <a href="https://api.cmocka.org/group__cmocka__asserts.html">Assert Macros</a></li>
+</ul>
+<h2 id="test-structure"><a class="header" href="#test-structure">Test Structure</a></h2>
+<ul>
+<li>
+<p>declare a const struct CMUnitTest to encapsulate all the tests</p>
+</li>
+<li>
+<p>call cmocka_run_group_tests([TEST STRUCT], NULL, NULL) to run tests</p>
+</li>
+<li>
+<p>unit test can have some variations</p>
+<ul>
+<li>with prestate</li>
+<li>with setup/teardown</li>
+</ul>
+</li>
+<li>
+<p>global setup/teardown functions can be set in the 2nd and 3rd parameters of the cmocka_run_group_tests() function</p>
+</li>
+</ul>
+<pre><code class="language-C">void Test(void **state);
+
+const struct CMUnitTest tests[] = {
+    cmocka_unit_test(Test),
+    cmocka_unit_test_setup(Test, setup)
+    cmocka_unit_test_teardown(Test, teardown)
+    cmocka_unit_test_setup_teardown(Test, setup, teardown)
+    cmocka_unit_test_prestate(Test, state)
+    cmocka_unit_test_prestate_setup_teardown(Test, setup, teardown, state)
+};
+
+
+int main(void)
+{
+    return cmocka_run_group_tests(tests, NULL, NULL);
+}
+</code></pre>
+<h3 id="prestates"><a class="header" href="#prestates">Prestates</a></h3>
+<ul>
+<li>states can be passed to tests</li>
+<li>useful to iterate over many states of a single test</li>
+</ul>
+<pre><code class="language-C">    typedef struct{
+        uint32_t input_a;
+        uint32_t input_b;
+        uint32_t expected;
+    }test_state_t;
+
+    static uint32_t calculate_mdc(uint32_t a, uint32_t b){
+        while(b != 0){
+            uint32_t temp = a;
+            a = b;
+            b = temp % b;
+        }
+
+        return a;
+    }
+
+    static void test_mdc(){
+        test_state_t *s = *state;
+
+        assert_uint equal(calculate_mdc(s-&gt;input_a, s-&gt;input_b), s-&gt;expected);
+    }
+
+    int main(void){
+        test_state_t states[] = {
+            {2,  3,  6},
+            {4,  6,  12},
+            {6,  8,  24},
+            {12, 18, 36},
+        };
+
+        const struct CMUnitTest tests[] = {
+            cmocka_unit_test_prestate(test_mdc, &amp;states[0]),
+            cmocka_unit_test_prestate(test_mdc, &amp;states[1]),
+            cmocka_unit_test_prestate(test_mdc, &amp;states[2]),
+            cmocka_unit_test_prestate(test_mdc, &amp;states[3]),
+        };
+
+        return cmocka_run_group_tests(tests, NULL, NULL);
+    }
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="mocking"><a class="header" href="#mocking">Mocking</a></h1>
+<h2 id="mock-functions"><a class="header" href="#mock-functions">Mock functions</a></h2>
+<ul>
+<li>when testing a function: if it has dependencies on others, these internal functions must be mocked
+<ul>
+<li>example: when testing a I2C API, HAL functions must be mocked so the test doent need to touch actual hardware</li>
+</ul>
+</li>
+<li>mockup syntax:
+<pre><code class="language-C">/* Original function: */
+int i2c_write(i2c_port_t port, i2c_slave_adr_t adr, uint8_t *data, uint16_t len)
+
+/* Mockup: */
+int __wrap_i2c_write(i2c_port_t port, i2c_slave_adr_t adr, uint8_t *data, uint16_t len)
+
+/* The original function will be available with the symbol __real_i2c_write(...) */
+</code></pre>
+</li>
+</ul>
+<h2 id="linker-trick"><a class="header" href="#linker-trick">Linker trick</a></h2>
+<ul>
+<li>it is necessary to indicate in build time what functions will be wrapped</li>
+<li>Makes so the linker substitutes the previous calls to the function with the wrapper symbol</li>
+</ul>
+<pre><code>-Wl,--wrap=[FUNCTION SYMBOL]
+</code></pre>
 
                     </main>
 

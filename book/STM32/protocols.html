@@ -35,10 +35,10 @@
             const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "../searchindex-c2f518eb.js";
+            window.path_to_searchindex_js = "../searchindex-6cd453ea.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="../toc-bccc44d4.js"></script>
+        <script src="../toc-ef5a7a78.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -211,6 +211,49 @@
 </ul>
 </li>
 </ul>
+<h2 id="spi"><a class="header" href="#spi">SPI</a></h2>
+<ul>
+<li>requires 4 lines (+1 for each addicional slave)<br>(these can have different names)
+<ul>
+<li>Cs: Chip select</li>
+<li>Sclk: Clock line</li>
+<li>Mosi: Master out, slave in</li>
+<li>Miso: Master in, slave out</li>
+</ul>
+</li>
+<li>fast protocol</li>
+<li>SPI modes:
+<ul>
+<li>clock polarity:
+<ul>
+<li>Active high: clock is idle low and pulled high</li>
+<li>Active low: clock is idle high and pulled low</li>
+</ul>
+</li>
+<li>clock phase
+<ul>
+<li>clock phase 0: data is sampled in the leading edge</li>
+<li>clock phase 1: data is sampled in the trailing edge</li>
+</ul>
+</li>
+</ul>
+</li>
+<li>multi slave communication:
+<ul>
+<li>independend slaves: one Cs line is connected to each slave (uses more resources)</li>
+<li>cooperative slaves/ Daisy chain: slaves pass the data from one to another, until it reaches the correct slave<br>(ones MOSI line is connected to the others MISO)</li>
+</ul>
+</li>
+</ul>
+<pre><code> ________     CS     ________
+|        |----------|        |      /* Pulled down/high to initiate communication */            
+|        |   SCLK   |        |
+|        |----------|        |      /* Clock (Master ALWAYS generates clock) */  
+| Master |   MOSI   | Slave  |
+|        |----------|        |      /* Master line to send data to slave */
+|        |   MISO   |        | 
+|________|----------|________|      /* Slave line to send data to master */
+</code></pre>
 <h2 id="i2c"><a class="header" href="#i2c">I2C</a></h2>
 <ul>
 <li>
