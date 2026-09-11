@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-5fe6d668.js";
+            window.path_to_searchindex_js = "searchindex-026cf382.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-130524df.js"></script>
+        <script src="toc-bccc44d4.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -254,6 +254,95 @@ done    pop {R0-R4, PC}
 </code></pre>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="introduction-2"><a class="header" href="#introduction-2">Introduction</a></h1>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="protocols"><a class="header" href="#protocols">Protocols</a></h1>
+<h2 id="uart--usart"><a class="header" href="#uart--usart">UART / USART</a></h2>
+<ul>
+<li>
+<p>requires 2 lines</p>
+<ul>
+<li>TX: Transmits data</li>
+<li>RX: Receives data</li>
+</ul>
+</li>
+<li>
+<p>no clock line: both devices have an agreement on the baud rate</p>
+</li>
+<li>
+<p>fast communication (but slower than SPI)</p>
+</li>
+<li>
+<p>simple and flexible (easy to implement own packet protocol)</p>
+</li>
+<li>
+<p>USART: UART but with a clock line (less common)</p>
+</li>
+<li>
+<p>elements to configure when using UART:</p>
+<ul>
+<li>turn on rcc clock for peripheral</li>
+<li>set flow control</li>
+<li>set number of databits</li>
+<li>set baudrate</li>
+<li>set number of parity bits</li>
+<li>set stopbits</li>
+<li>set mode</li>
+<li>enable interrupts (in the peripheral and in the NVIC)</li>
+<li>enable peripheral</li>
+</ul>
+</li>
+</ul>
+<h2 id="i2c"><a class="header" href="#i2c">I2C</a></h2>
+<ul>
+<li>
+<p>requires 2 lines</p>
+<ul>
+<li>SDA: Data line</li>
+<li>SCL: Clock line</li>
+</ul>
+</li>
+<li>
+<p>slower compared to SPI and UART</p>
+</li>
+<li>
+<p>slaves are addressed with 7-10 bit words</p>
+</li>
+<li>
+<p>7-bit addressing is the most common</p>
+</li>
+<li>
+<p>average packet structure:</p>
+<pre><code>        [START] [ADDRESS FRAME] [READ/WRITE] [ACK/NACK] [DATA] [ACK/NACK] [STOP]
+bits:     1            7             1            1       8        1        1
+</code></pre>
+</li>
+<li>
+<p>write packet:</p>
+<ul>
+<li>address frame: address of slave to write to</li>
+<li>write/read byte 1: set to 0 (Write)</li>
+<li>ACK from slave</li>
+<li>data byte 1: register to write to</li>
+<li>ACK from slave</li>
+<li>data byte 2: info to write to register</li>
+</ul>
+</li>
+<li>
+<p>read packet:</p>
+<ul>
+<li>address frame: addres of slave to read from</li>
+<li>write/read byte: set to 0 (Write)</li>
+<li>ACK from slave</li>
+<li>data byte 1: register to read from</li>
+<li>ACK from slave</li>
+<li>repeated start: master doent let go of the bus after first packet</li>
+<li>write/read byte 2: set to 1 (Read)</li>
+<li>ACK from slave</li>
+<li>data byte 2: data received from slave</li>
+<li>if master sends ACK: slave may transmit another byte (slave increment internal register pointer)</li>
+</ul>
+</li>
+</ul>
 <div style="break-before: page; page-break-before: always;"></div>
 <h1 id="introduction-3"><a class="header" href="#introduction-3">Introduction</a></h1>
 
