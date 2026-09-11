@@ -3,8 +3,7 @@
     <head>
         <!-- Book generated using mdBook -->
         <meta charset="UTF-8">
-        <title>Embedded Systems Notes</title>
-        <meta name="robots" content="noindex">
+        <title>Bootloader - Embedded Systems Notes</title>
 
 
         <!-- Custom HTML head -->
@@ -13,33 +12,33 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="theme-color" content="#ffffff">
 
-        <link rel="icon" href="favicon-de23e50b.svg">
-        <link rel="shortcut icon" href="favicon-8114d1fc.png">
-        <link rel="stylesheet" href="css/variables-8adf115d.css">
-        <link rel="stylesheet" href="css/general-e96d0476.css">
-        <link rel="stylesheet" href="css/chrome-d279d366.css">
-        <link rel="stylesheet" href="css/print-9e4910d8.css" media="print">
+        <link rel="icon" href="../favicon-de23e50b.svg">
+        <link rel="shortcut icon" href="../favicon-8114d1fc.png">
+        <link rel="stylesheet" href="../css/variables-8adf115d.css">
+        <link rel="stylesheet" href="../css/general-e96d0476.css">
+        <link rel="stylesheet" href="../css/chrome-d279d366.css">
+        <link rel="stylesheet" href="../css/print-9e4910d8.css" media="print">
 
         <!-- Fonts -->
-        <link rel="stylesheet" href="fonts/fonts-9644e21d.css">
+        <link rel="stylesheet" href="../fonts/fonts-9644e21d.css">
 
         <!-- Highlight.js Stylesheets -->
-        <link rel="stylesheet" id="mdbook-highlight-css" href="highlight-493f70e1.css">
-        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="tomorrow-night-4c0ae647.css">
-        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="ayu-highlight-3fdfc3ac.css">
+        <link rel="stylesheet" id="mdbook-highlight-css" href="../highlight-493f70e1.css">
+        <link rel="stylesheet" id="mdbook-tomorrow-night-css" href="../tomorrow-night-4c0ae647.css">
+        <link rel="stylesheet" id="mdbook-ayu-highlight-css" href="../ayu-highlight-3fdfc3ac.css">
 
         <!-- Custom theme stylesheets -->
 
 
         <!-- Provide site root and default themes to javascript -->
         <script>
-            const path_to_root = "";
+            const path_to_root = "../";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-1395bc0f.js";
+            window.path_to_searchindex_js = "../searchindex-1395bc0f.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-96cd67cf.js"></script>
+        <script src="../toc-96cd67cf.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -106,7 +105,7 @@
             <!-- populated by js -->
             <mdbook-sidebar-scrollbox class="sidebar-scrollbox"></mdbook-sidebar-scrollbox>
             <noscript>
-                <iframe class="sidebar-iframe-outer" src="toc.html"></iframe>
+                <iframe class="sidebar-iframe-outer" src="../toc.html"></iframe>
             </noscript>
             <div id="mdbook-sidebar-resize-handle" class="sidebar-resize-handle">
                 <div class="sidebar-resize-indicator"></div>
@@ -141,7 +140,7 @@
                     <h1 class="menu-title">Embedded Systems Notes</h1>
 
                     <div class="right-buttons">
-                        <a href="print.html" title="Print this book" aria-label="Print this book">
+                        <a href="../print.html" title="Print this book" aria-label="Print this book">
                             <span class=fa-svg id="print-button"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M128 0C92.7 0 64 28.7 64 64v96h64V64H354.7L384 93.3V160h64V93.3c0-17-6.7-33.3-18.7-45.3L400 18.7C388 6.7 371.7 0 354.7 0H128zM384 352v32 64H128V384 368 352H384zm64 32h32c17.7 0 32-14.3 32-32V256c0-35.3-28.7-64-64-64H64c-35.3 0-64 28.7-64 64v96c0 17.7 14.3 32 32 32H64v64c0 35.3 28.7 64 64 64H384c35.3 0 64-28.7 64-64V384zm-16-88c-13.3 0-24-10.7-24-24s10.7-24 24-24s24 10.7 24 24s-10.7 24-24 24z"/></svg></span>
                         </a>
 
@@ -175,301 +174,7 @@
 
                 <div id="mdbook-content" class="content">
                     <main>
-                        <h1 id="introduction"><a class="header" href="#introduction">Introduction</a></h1>
-<p>This is a book to document my embedded systems learning process.<br>Source code is located at <a href="https://github.com/PedroFerrariBarbosa202/embedded-systems-notes">PedroFerrariBarbosa202/embedded-systems-notes</a>.</p>
-<div style="break-before: page; page-break-before: always;"></div>
-<h1 id="introduction-1"><a class="header" href="#introduction-1">Introduction</a></h1>
-<div style="break-before: page; page-break-before: always;"></div>
-<h1 id="assembly"><a class="header" href="#assembly">Assembly</a></h1>
-<h2 id="stack"><a class="header" href="#stack">Stack</a></h2>
-<ul>
-<li>its a region of memory treated as a data structure</li>
-<li>grows upwards (from higher to lower addresses)</li>
-<li>SP register points to top of register</li>
-<li>allocation:
-<pre><code class="language-asm">sub SP, SP, #40    ;allocates 10 bytes
-add Sp, SP, #40    ;deallocates 10 bytes
-</code></pre>
-</li>
-<li>PUSH and POP: instructions to directly manipulate the stack
-<pre><code class="language-asm">push {R4-R11, LR}   ;push register and return address into the stack
-; ...
-pop {R4-R11, PC}    ;pop from stack and put data on registers and PC
-</code></pre>
-</li>
-</ul>
-<h3 id="stack-frame"><a class="header" href="#stack-frame">Stack frame</a></h3>
-<ul>
-<li>to better access data from the stack in a function, a register (suck as R11) serves as a stack frame</li>
-<li>stack frame will point to the base of the stack of that specific function</li>
-<li>order of data allocated on stack after a function call:
-<ul>
-<li>
-<ol>
-<li>Parameters</li>
-</ol>
-</li>
-<li>
-<ol start="2">
-<li>Return address</li>
-</ol>
-</li>
-<li>
-<ol start="3">
-<li>Saved registers</li>
-</ol>
-</li>
-<li>
-<ol start="4">
-<li>Local Variables</li>
-</ol>
-</li>
-</ul>
-</li>
-<li>one advantage of a stack frame is that you can push and pop while still accessing local variables correctly by their symbolic name</li>
-</ul>
-<h3 id="stack-rules"><a class="header" href="#stack-rules">Stack rules</a></h3>
-<ul>
-<li>
-<ol>
-<li>program segments must have equal number of push and pull operations</li>
-</ol>
-</li>
-<li>
-<ol start="2">
-<li>stack acesses should not be performed in unallocated areas</li>
-</ol>
-</li>
-<li>
-<ol start="3">
-<li>stack push must first decrement by (4 * BYTES_TO_ALLOCATE)</li>
-</ol>
-</li>
-<li>
-<ol start="4">
-<li>stack pop must increment by (4 * BYTES_TO_DEALLOCATE) after reading data</li>
-</ol>
-</li>
-</ul>
-<h2 id="parameter-passing"><a class="header" href="#parameter-passing">Parameter passing</a></h2>
-<ul>
-<li>methods to pass parameters
-<ul>
-<li>call by value: makes a local copy of the data</li>
-<li>call by reference: passes a pointer to the data</li>
-</ul>
-</li>
-<li>by AAPCS convention, the first four parameters are passed in the R0-R3 registers<br>(if more than 4 parameters: use the stack)</li>
-<li>in assembly: multiple return values can be passed through registers</li>
-</ul>
-<div style="break-before: page; page-break-before: always;"></div>
-<h1 id="functional-debugging"><a class="header" href="#functional-debugging">Functional Debugging</a></h1>
-<h2 id="dump-into-array-without-filtering"><a class="header" href="#dump-into-array-without-filtering">Dump into Array without filtering</a></h2>
-<ul>
-<li>embedded system may not always have the capability of using print statements for some reasons:
-<ul>
-<li>
-<ol>
-<li>bandwidth of the print function may not be large enough</li>
-</ol>
-</li>
-<li>
-<ol start="2">
-<li>system may not have a display available for the output</li>
-</ol>
-</li>
-</ul>
-</li>
-<li>solution: add a function/debugger instrument to throw into an array debugging info, retrieving it after the runtime</li>
-</ul>
-<pre><code class="language-asm">SIZE equ 20
-ABuf space SIZE
-BBuf space SIZE
-Cnt  space 4
-
-Save    push {R0-R4, LR}
-        ldr R0, =Cnt                        ;R0 = &amp;Cnt
-        cmp R1, #SIZE                       ;R1 = Cnt
-        bhs done
-        ldr R3, =GPIO_PORTA_DATA_R
-        ldr R3, [R3]                        ;R3 is Port A
-        ldr r2, =ABuf
-        strb R3, [R2, R1]                   ;Save Port A
-        ldr R3, =GPIO_PORTB_DATA_R
-        ldrb R3, [R3]                       ;R3 is Port B
-        ldr R3, =BBuf
-        strb R3, [R2, R1]                   ;Save Port B
-        add R1, #1
-        str R1, [R0]                        ;Save Cnt
-done    pop {R0-R4, PC}
-</code></pre>
-<h2 id="dump-into-array-with-filtering"><a class="header" href="#dump-into-array-with-filtering">Dump into Array with Filtering</a></h2>
-<ul>
-<li>problem with dumping: it generates a lot of information</li>
-<li>filter is a condition to add items to the debugging array</li>
-</ul>
-<pre><code class="language-asm">SIZE equ 20
-ABuf space SIZE
-BBuf space SIZE
-Cnt  space 4
-
-Save    push {R0-R4, LR}
-        ldr R3, =GPIO_PORTB_DATA_R
-        ldr R3, [R3]                        ;R3 is Port B
-        cmp R3, #100                        ;checks if Port B less than 100
-        bls done                            ;assuming unsigned
-        ldr R0, =Cnt                        ;R0 = &amp;Cnt
-        cmp R1, #SIZE                       ;R1 = Cnt
-        bhs done
-        ldr R3, =GPIO_PORTA_DATA_R
-        ldr R3, [R3]                        ;R3 is Port A
-        ldr r2, =ABuf
-        strb R3, [R2, R1]                   ;Save Port A
-        ldr R3, =GPIO_PORTB_DATA_R
-        ldrb R3, [R3]                       ;R3 is Port B
-        ldr R3, =BBuf
-        strb R3, [R2, R1]                   ;Save Port B
-        add R1, #1
-        str R1, [R0]                        ;Save Cnt
-done    pop {R0-R4, PC}
-</code></pre>
-<div style="break-before: page; page-break-before: always;"></div>
-<h1 id="introduction-2"><a class="header" href="#introduction-2">Introduction</a></h1>
-<p>This will contain mainly notes relating to the STM32F4 family.<br>I’ve used Libopencm3 as a HAL in all my projects relating to STM32, so references to implementation will be based on Libopencm3’s API.</p>
-<div style="break-before: page; page-break-before: always;"></div>
-<h1 id="protocols"><a class="header" href="#protocols">Protocols</a></h1>
-<h2 id="uart--usart"><a class="header" href="#uart--usart">UART / USART</a></h2>
-<ul>
-<li>
-<p>requires 2 lines</p>
-<ul>
-<li>TX: Transmits data</li>
-<li>RX: Receives data</li>
-</ul>
-</li>
-<li>
-<p>no clock line: both devices have an agreement on the baud rate</p>
-</li>
-<li>
-<p>fast communication (but slower than SPI)</p>
-</li>
-<li>
-<p>simple and flexible (easy to implement own packet protocol)</p>
-</li>
-<li>
-<p>USART: UART but with a clock line (less common)</p>
-</li>
-<li>
-<p>elements to configure when using UART:</p>
-<ul>
-<li>turn on rcc clock for peripheral</li>
-<li>set flow control</li>
-<li>set number of databits</li>
-<li>set baudrate</li>
-<li>set number of parity bits</li>
-<li>set stopbits</li>
-<li>set mode</li>
-<li>enable interrupts (in the peripheral and in the NVIC)</li>
-<li>enable peripheral</li>
-</ul>
-</li>
-</ul>
-<h2 id="spi"><a class="header" href="#spi">SPI</a></h2>
-<ul>
-<li>requires 4 lines (+1 for each addicional slave)<br>(these can have different names)
-<ul>
-<li>Cs: Chip select</li>
-<li>Sclk: Clock line</li>
-<li>Mosi: Master out, slave in</li>
-<li>Miso: Master in, slave out</li>
-</ul>
-</li>
-<li>fast protocol</li>
-<li>SPI modes:
-<ul>
-<li>clock polarity:
-<ul>
-<li>Active high: clock is idle low and pulled high</li>
-<li>Active low: clock is idle high and pulled low</li>
-</ul>
-</li>
-<li>clock phase
-<ul>
-<li>clock phase 0: data is sampled in the leading edge</li>
-<li>clock phase 1: data is sampled in the trailing edge</li>
-</ul>
-</li>
-</ul>
-</li>
-<li>multi slave communication:
-<ul>
-<li>independend slaves: one Cs line is connected to each slave (uses more resources)</li>
-<li>cooperative slaves/ Daisy chain: slaves pass the data from one to another, until it reaches the correct slave<br>(ones MOSI line is connected to the others MISO)</li>
-</ul>
-</li>
-</ul>
-<pre><code> ________     CS     ________
-|        |----------|        |      /* Pulled down/high to initiate communication */            
-|        |   SCLK   |        |
-|        |----------|        |      /* Clock (Master ALWAYS generates clock) */  
-| Master |   MOSI   | Slave  |
-|        |----------|        |      /* Master line to send data to slave */
-|        |   MISO   |        | 
-|________|----------|________|      /* Slave line to send data to master */
-</code></pre>
-<h2 id="i2c"><a class="header" href="#i2c">I2C</a></h2>
-<ul>
-<li>
-<p>requires 2 lines</p>
-<ul>
-<li>SDA: Data line</li>
-<li>SCL: Clock line</li>
-</ul>
-</li>
-<li>
-<p>slower compared to SPI and UART</p>
-</li>
-<li>
-<p>slaves are addressed with 7-10 bit words</p>
-</li>
-<li>
-<p>7-bit addressing is the most common</p>
-</li>
-<li>
-<p>average packet structure:</p>
-<pre><code>        [START] [ADDRESS FRAME] [READ/WRITE] [ACK/NACK] [DATA] [ACK/NACK] [STOP]
-bits:     1            7             1            1       8        1        1
-</code></pre>
-</li>
-<li>
-<p>write packet:</p>
-<ul>
-<li>address frame: address of slave to write to</li>
-<li>write/read byte 1: set to 0 (Write)</li>
-<li>ACK from slave</li>
-<li>data byte 1: register to write to</li>
-<li>ACK from slave</li>
-<li>data byte 2: info to write to register</li>
-</ul>
-</li>
-<li>
-<p>read packet:</p>
-<ul>
-<li>address frame: addres of slave to read from</li>
-<li>write/read byte: set to 0 (Write)</li>
-<li>ACK from slave</li>
-<li>data byte 1: register to read from</li>
-<li>ACK from slave</li>
-<li>repeated start: master doent let go of the bus after first packet</li>
-<li>write/read byte 2: set to 1 (Read)</li>
-<li>ACK from slave</li>
-<li>data byte 2: data received from slave</li>
-<li>if master sends ACK: slave may transmit another byte (slave increment internal register pointer)</li>
-</ul>
-</li>
-</ul>
-<div style="break-before: page; page-break-before: always;"></div>
-<h1 id="bootloader"><a class="header" href="#bootloader">Bootloader</a></h1>
+                        <h1 id="bootloader"><a class="header" href="#bootloader">Bootloader</a></h1>
 <ul>
 <li>first program to run (stays on the beginning of DRAM)</li>
 <li>jumps to main firmware after finishes working</li>
@@ -538,141 +243,18 @@ int main(void) {
   SCB_VTOR = MAIN_APP_START_ADDR;
 }
 </code></pre>
-<div style="break-before: page; page-break-before: always;"></div>
-<h1 id="introduction-3"><a class="header" href="#introduction-3">Introduction</a></h1>
-<ul>
-<li>CMocka is a framework for testing C software</li>
-</ul>
-<h2 id="standard-includes"><a class="header" href="#standard-includes">Standard includes</a></h2>
-<ul>
-<li>CMocka needs some includes to work</li>
-</ul>
-<pre><code class="language-C">#include &lt;stdarg.h&gt;
-#include &lt;stdbool.h&gt;
-#include &lt;stddef.h&gt;
-#include &lt;stdint.h&gt;
-#include &lt;setjmp.h&gt;
-
-#include &lt;cmocka.h&gt;
-</code></pre>
-<h2 id="asserts"><a class="header" href="#asserts">Asserts</a></h2>
-<ul>
-<li>heres the full list of assert macros: <a href="https://api.cmocka.org/group__cmocka__asserts.html">Assert Macros</a></li>
-</ul>
-<h2 id="test-structure"><a class="header" href="#test-structure">Test Structure</a></h2>
-<ul>
-<li>
-<p>declare a const struct CMUnitTest to encapsulate all the tests</p>
-</li>
-<li>
-<p>call cmocka_run_group_tests([TEST STRUCT], NULL, NULL) to run tests</p>
-</li>
-<li>
-<p>unit test can have some variations</p>
-<ul>
-<li>with prestate</li>
-<li>with setup/teardown</li>
-</ul>
-</li>
-<li>
-<p>global setup/teardown functions can be set in the 2nd and 3rd parameters of the cmocka_run_group_tests() function</p>
-</li>
-</ul>
-<pre><code class="language-C">void Test(void **state);
-
-const struct CMUnitTest tests[] = {
-    cmocka_unit_test(Test),
-    cmocka_unit_test_setup(Test, setup)
-    cmocka_unit_test_teardown(Test, teardown)
-    cmocka_unit_test_setup_teardown(Test, setup, teardown)
-    cmocka_unit_test_prestate(Test, state)
-    cmocka_unit_test_prestate_setup_teardown(Test, setup, teardown, state)
-};
-
-
-int main(void)
-{
-    return cmocka_run_group_tests(tests, NULL, NULL);
-}
-</code></pre>
-<h3 id="prestates"><a class="header" href="#prestates">Prestates</a></h3>
-<ul>
-<li>states can be passed to tests</li>
-<li>useful to iterate over many states of a single test</li>
-</ul>
-<pre><code class="language-C">    typedef struct{
-        uint32_t input_a;
-        uint32_t input_b;
-        uint32_t expected;
-    }test_state_t;
-
-    static uint32_t calculate_mdc(uint32_t a, uint32_t b){
-        while(b != 0){
-            uint32_t temp = a;
-            a = b;
-            b = temp % b;
-        }
-
-        return a;
-    }
-
-    static void test_mdc(){
-        test_state_t *s = *state;
-
-        assert_uint equal(calculate_mdc(s-&gt;input_a, s-&gt;input_b), s-&gt;expected);
-    }
-
-    int main(void){
-        test_state_t states[] = {
-            {2,  3,  6},
-            {4,  6,  12},
-            {6,  8,  24},
-            {12, 18, 36},
-        };
-
-        const struct CMUnitTest tests[] = {
-            cmocka_unit_test_prestate(test_mdc, &amp;states[0]),
-            cmocka_unit_test_prestate(test_mdc, &amp;states[1]),
-            cmocka_unit_test_prestate(test_mdc, &amp;states[2]),
-            cmocka_unit_test_prestate(test_mdc, &amp;states[3]),
-        };
-
-        return cmocka_run_group_tests(tests, NULL, NULL);
-    }
-</code></pre>
-<div style="break-before: page; page-break-before: always;"></div>
-<h1 id="mocking"><a class="header" href="#mocking">Mocking</a></h1>
-<h2 id="mock-functions"><a class="header" href="#mock-functions">Mock functions</a></h2>
-<ul>
-<li>when testing a function: if it has dependencies on others, these internal functions must be mocked
-<ul>
-<li>example: when testing a I2C API, HAL functions must be mocked so the test doent need to touch actual hardware</li>
-</ul>
-</li>
-<li>mockup syntax:
-<pre><code class="language-C">/* Original function: */
-int i2c_write(i2c_port_t port, i2c_slave_adr_t adr, uint8_t *data, uint16_t len)
-
-/* Mockup: */
-int __wrap_i2c_write(i2c_port_t port, i2c_slave_adr_t adr, uint8_t *data, uint16_t len)
-
-/* The original function will be available with the symbol __real_i2c_write(...) */
-</code></pre>
-</li>
-</ul>
-<h2 id="linker-trick"><a class="header" href="#linker-trick">Linker trick</a></h2>
-<ul>
-<li>it is necessary to indicate in build time what functions will be wrapped</li>
-<li>Makes so the linker substitutes the previous calls to the function with the wrapper symbol</li>
-</ul>
-<pre><code>-Wl,--wrap=[FUNCTION SYMBOL]
-</code></pre>
 
                     </main>
 
                     <nav class="nav-wrapper" aria-label="Page navigation">
                         <!-- Mobile navigation buttons -->
+                            <a rel="prev" href="../STM32/protocols.html" class="mobile-nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                            </a>
 
+                            <a rel="next prefetch" href="../CMocka/intro.html" class="mobile-nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                                <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                            </a>
 
                         <div style="clear: both"></div>
                     </nav>
@@ -680,7 +262,13 @@ int __wrap_i2c_write(i2c_port_t port, i2c_slave_adr_t adr, uint8_t *data, uint16
             </div>
 
             <nav class="nav-wide-wrapper" aria-label="Page navigation">
+                    <a rel="prev" href="../STM32/protocols.html" class="nav-chapters previous" title="Previous chapter" aria-label="Previous chapter" aria-keyshortcuts="Left">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M41.4 233.4c-12.5 12.5-12.5 32.8 0 45.3l160 160c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L109.3 256 246.6 118.6c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0l-160 160z"/></svg></span>
+                    </a>
 
+                    <a rel="next prefetch" href="../CMocka/intro.html" class="nav-chapters next" title="Next chapter" aria-label="Next chapter" aria-keyshortcuts="Right">
+                        <span class=fa-svg><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 512"><!--! Font Awesome Free 6.2.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2022 Fonticons, Inc. --><path d="M278.6 233.4c12.5 12.5 12.5 32.8 0 45.3l-160 160c-12.5 12.5-32.8 12.5-45.3 0s-12.5-32.8 0-45.3L210.7 256 73.4 118.6c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0l160 160z"/></svg></span>
+                    </a>
             </nav>
 
         </div>
@@ -714,21 +302,16 @@ int __wrap_i2c_write(i2c_port_t port, i2c_slave_adr_t adr, uint8_t *data, uint16
         </script>
 
 
-        <script src="elasticlunr-ef4e11c1.min.js"></script>
-        <script src="mark-09e88c2c.min.js"></script>
-        <script src="searcher-09f2665d.js"></script>
+        <script src="../elasticlunr-ef4e11c1.min.js"></script>
+        <script src="../mark-09e88c2c.min.js"></script>
+        <script src="../searcher-09f2665d.js"></script>
 
-        <script src="clipboard-1626706a.min.js"></script>
-        <script src="highlight-abc7f01d.js"></script>
-        <script src="book-609e4cb8.js"></script>
+        <script src="../clipboard-1626706a.min.js"></script>
+        <script src="../highlight-abc7f01d.js"></script>
+        <script src="../book-609e4cb8.js"></script>
 
         <!-- Custom JS scripts -->
 
-        <script>
-        window.addEventListener('load', function() {
-            window.setTimeout(window.print, 100);
-        });
-        </script>
 
 
     </div>

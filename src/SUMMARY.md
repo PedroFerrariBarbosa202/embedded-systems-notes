@@ -9,6 +9,7 @@
 # STM32
 - [Introduction](./STM32/intro.md)
 - [Protocols](./STM32/protocols.md)
+- [Bootloader](./STM32/bootloader.md)
 
 # CMocka
 - [Introduction](./CMocka/intro.md)
