@@ -4,6 +4,7 @@
 # ArmCortexM
 - [Introduction](./ArmCortexM/intro.md)
 - [Assembly](./ArmCortexM/assembly.md)
+- [NVIC](./ArmCortexM/nvic.md)
 - [Debugging](./ArmCortexM/debugging.md)
 
 # STM32

@@ -23,7 +23,7 @@
     - upload and update firmware using UART
     - implement custom communication protocol to receive firmware data
 
-## Basic implementation:
+## Basic implementation
 ```C
 static void jump_to_main(void){  
   // to circunvent ugly function pointer syntax :)
