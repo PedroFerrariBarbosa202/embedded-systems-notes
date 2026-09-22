@@ -15,3 +15,13 @@
 # CMocka
 - [Introduction](./CMocka/intro.md)
 - [Mocking](./CMocka/mocking.md)
+
+# Build-a-Debugger
+- [Introduction](./BuildADebugger/intro.md)
+- [Attaching_To_Process](./BuildADebugger/attach_process.md)
+
+# C++
+- [Introduction](./CPP/intro.md)
+- [Constructors](./CPP/constructors.md)
+- [Patterns](./CPP/patterns.md)
+

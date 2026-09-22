@@ -36,10 +36,10 @@
             const path_to_root = "";
             const default_light_theme = "light";
             const default_dark_theme = "navy";
-            window.path_to_searchindex_js = "searchindex-deb219c8.js";
+            window.path_to_searchindex_js = "searchindex-02c0068b.js";
         </script>
         <!-- Start loading toc.js asap -->
-        <script src="toc-82fd1bee.js"></script>
+        <script src="toc-328791d7.js"></script>
     </head>
     <body>
     <div id="mdbook-help-container">
@@ -834,6 +834,120 @@ int __wrap_i2c_write(i2c_port_t port, i2c_slave_adr_t adr, uint8_t *data, uint16
 <li>Makes so the linker substitutes the previous calls to the function with the wrapper symbol</li>
 </ul>
 <pre><code>-Wl,--wrap=[FUNCTION SYMBOL]
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="introduction-4"><a class="header" href="#introduction-4">Introduction</a></h1>
+<p>This notes are related to the book Building a Debugger: write a native x64 debugger from scrach, from the author Sy Brand</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="attaching-to-a-process"><a class="header" href="#attaching-to-a-process">Attaching To a Process</a></h1>
+<ul>
+<li>in linux, DWARF is the debugging information format</li>
+<li>without it, it is IMPOSSIBLE to retrieve the source file from an executable</li>
+<li>ptrace: gives a process be able to control another</li>
+</ul>
+<pre><code class="language-C">    extern long int ptrace (enum __ptrace_request __request, ...);
+    - PTRACE_ATTACH: attach to a process
+    - PTRACE_TRACEME: makes the process tracable
+    - PTRACE_DETACH: detach from a process
+</code></pre>
+<pre><code class="language-cpp">    if(ptrace(PTRACE_ATTACH, pid, nullptr, nullptr) &lt; 0){
+        std::perror("could not attach");
+        return -1;
+    }
+</code></pre>
+<ul>
+<li>fork(): clones the process and returns a pid_t
+<ul>
+<li>pid == 0: current process is the child</li>
+<li>pid != 0: current process is the parent</li>
+</ul>
+</li>
+<li>execX(): runs a new process (there are a lot of types)</li>
+</ul>
+<pre><code class="language-c">    /* Execute PATH with arguments ARGV and environment from `environ'.  */
+extern int execv (const char *__path, char *const __argv[])
+     __THROW __nonnull ((1, 2));
+
+/* Execute PATH with all arguments after PATH until a NULL pointer,
+   and the argument after that for environment.  */
+extern int execle (const char *__path, const char *__arg, ...)
+     __THROW __nonnull ((1, 2));
+
+/* Execute PATH with all arguments after PATH until
+   a NULL pointer and environment from `environ'.  */
+extern int execl (const char *__path, const char *__arg, ...)
+     __THROW __nonnull ((1, 2));
+
+/* Execute FILE, searching in the `PATH' environment variable if it contains
+   no slashes, with arguments ARGV and environment from `environ'.  */
+extern int execvp (const char *__file, char *const __argv[])
+     __THROW __nonnull ((1, 2));
+
+/* Execute FILE, searching in the `PATH' environment variable if
+   it contains no slashes, with all arguments after FILE until a
+   NULL pointer and environment from `environ'.  */
+extern int execlp (const char *__file, const char *__arg, ...)
+     __THROW __nonnull ((1, 2));
+</code></pre>
+<ul>
+<li>editline/readline.h: CLI library</li>
+<li>needs to be installed locally</li>
+</ul>
+<pre><code class="language-C">line = readline("std&gt; ")                            /*read a line :)*/
+add_history(line);                                  /*adds line to history*/
+line == history_list()[history_length - 1]-&gt;line;   /*accesses the history list*/
+
+</code></pre>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="introduction-5"><a class="header" href="#introduction-5">Introduction</a></h1>
+<p>This will not cover basic aspects of the language, and will be more focused on embedded and lower-level features.</p>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="constructors"><a class="header" href="#constructors">Constructors</a></h1>
+<div style="break-before: page; page-break-before: always;"></div>
+<h1 id="patterns"><a class="header" href="#patterns">Patterns</a></h1>
+<h2 id="1-constructing-through-a-static-method"><a class="header" href="#1-constructing-through-a-static-method">1. Constructing through a static method</a></h2>
+<ul>
+<li>makes the constructor of a class private and create an API for constructing said class</li>
+<li>advantage: makes the contruction process more customizable and controlled</li>
+</ul>
+<pre><code class="language-Cpp">// process.hpp
+class process{
+    public:
+        /*disable constructors*/
+        process() = delete;
+        process(const process&amp;) = delete;
+        process&amp; operator=(const process&amp;) = delete;
+
+        /*calls private constructor*/
+        static std::unique_ptr&lt;process&gt; launch(std::filesystem::path path);
+
+    private:
+        pid_t pid_ = 0;
+        bool terminate_on_end_ = true;
+
+        /*private constructor*/
+        process(pid_t pid, bool terminate_on_end) : 
+            pid_(pid), terminate_on_end_(terminate_on_end) {}
+};
+</code></pre>
+<ul>
+<li>it can be used to call constructors of an inherited class as well</li>
+</ul>
+<pre><code class="language-Cpp">    class error : public std::runtime_error{
+    public:    
+        /*different calls for same inherited constructor*/s
+        [[noreturn]]
+        static void send(const std::string&amp; what) {throw error(what);}
+        
+        [[noreturn]]
+        static void send_errno(const std::string&amp; prefix){
+            throw error(prefix + ": " + std::strerror(errno));
+        }
+
+    private:
+        /*calls runtime_error class's constructor*/
+        error(const std::string&amp; what) : std::runtime_error(what){}
+    };
 </code></pre>
 
                     </main>
